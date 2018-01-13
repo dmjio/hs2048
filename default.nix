@@ -1,13 +1,14 @@
-{ pkgs ? import <nixpkgs> {} }:
-let
-  result = pkgs.haskell.packages.ghcjs.callCabal2nix "miso" (pkgs.fetchFromGitHub {
+{ pkgs ? import <nixpkgs> {}
+, miso ? pkgs.haskell.packages.ghcjs.callCabal2nix "miso" (pkgs.fetchFromGitHub {
     sha256 = "0l6dscqhniq8my49ycgid3jwxkn7dgv680cjby9qn063kf2k64df";
     rev = "8475a6bbc0832e730f9556a371f8131a8b421230";
     owner = "haskell-miso";
     repo = "miso";
-  }) {};
+  }) {}
+}:
+let
   hs2048 = pkgs.haskell.packages.ghcjs.callPackage ./hs-2048.nix {
-    miso = result;
+    inherit miso;
   };
   inherit (pkgs) sass closurecompiler;
 in
