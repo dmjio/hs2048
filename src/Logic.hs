@@ -8,6 +8,7 @@ import GameModel
 import InputModel
 import Miso
 import System.Random
+import Touch
 
 groupedByTwo :: Eq a => [a] -> [[a]]
 groupedByTwo [x] = [[x]]
@@ -155,5 +156,16 @@ updateGameState Continue state = noEff state {gameProgress = Continuing}
 updateGameState (GetArrows arr) state = step nState <# pure Sync
   where
     nState = state {direction = toDirection arr}
+updateGameState (TouchStart (TouchEvent touch)) state =
+  state {prevTouch = Just touch} <# do
+    putStrLn "Touch did start"
+    pure NoOp
+updateGameState (TouchEnd (TouchEvent touch)) state =
+  state {prevTouch = Nothing} <# do
+    putStrLn "Touch did end"
+    let (GetArrows x) =
+          swipe (client . fromJust . prevTouch $ state) (client touch)
+    print x
+    pure $ swipe (client . fromJust . prevTouch $ state) (client touch)
 updateGameState Init state = state <# pure NewGame
 updateGameState _ state = noEff state
