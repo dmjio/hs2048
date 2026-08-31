@@ -151,7 +151,7 @@ step state@GameState {..} =
      | direction /= None -> stepSlide state
      | otherwise -> state
 
-updateGameState :: Action -> Effect parent GameState Action
+updateGameState :: Action -> Effect context props GameState Action
 updateGameState = \case
   Init ->
     issue NewGame
