@@ -30,6 +30,6 @@ main = do
     { mount = Just Init
     , subs = [arrowsSub GetArrows]
 #ifndef WASM
-    , styles = [ Href "./static/main.css" ]
+    , styles = [ Href "./static/main.css" True ]
 #endif
     }

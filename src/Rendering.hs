@@ -85,7 +85,7 @@ wonOverlayColor = rgba 237 194 46 0.5
 wonMessage :: MisoString
 wonMessage = "You won!"
 
-displayHeading :: GameState -> View GameState Action
+displayHeading :: GameState -> View context GameState Action
 displayHeading GameState {..} =
   div_
     [class_ "heading"]
@@ -108,7 +108,7 @@ displayHeading GameState {..} =
               [text . ms $ "+" ++ show drawScoreAdd]
           ]
 
-displayIntro :: View GameState Action
+displayIntro :: View context GameState Action
 displayIntro =
   div_
     [class_ "above-game"]
@@ -118,7 +118,7 @@ displayIntro =
     , a_ [class_ "restart-button", onClick NewGame] [text "New Game"]
     ]
 
-displayMessage :: GameState -> View GameState Action
+displayMessage :: GameState -> View context GameState Action
 displayMessage state@GameState {..} =
   div_
     [class_ . S.pack $ "game-message" ++ msgClass]
@@ -138,12 +138,12 @@ displayMessage state@GameState {..} =
         Won -> ("Game Won!", " game-won")
         _ -> ("", "")
 
-gridRow :: View GameState Action
+gridRow :: View context GameState Action
 gridRow = div_ [class_ "grid-row"] (replicate 4 gridCell)
   where
     gridCell = div_ [class_ "grid-cell"] []
 
-displayContainer :: View GameState Action
+displayContainer :: View context GameState Action
 displayContainer =
   div_
     [class_ "grid-container", onPointerEnter TouchStart, onPointerLeave TouchEnd]
@@ -157,7 +157,7 @@ previousPos (Tile n pos _) =
     _ -> const pos
 previousPos Empty = id
 
-displayTile :: (Tile, Int, Int) -> [View GameState Action]
+displayTile :: (Tile, Int, Int) -> [View context GameState Action]
 displayTile (tile, col, row) =
   merges ++
   [ div_
@@ -186,7 +186,7 @@ displayTile (tile, col, row) =
         (Number _) -> []
         (Tile _ _ x) -> concatMap (displayTile . (\t -> (t, col, row))) x
 
-displayTileContainer :: Grid -> View GameState Action
+displayTileContainer :: Grid -> View context GameState Action
 displayTileContainer grid =
   div_
     [class_ "tile-container"]
@@ -194,7 +194,7 @@ displayTileContainer grid =
      filter (\(t, _, _) -> t /= Empty) . tilesWithCoordinates $
      grid)
 
-displayGame :: GameState -> View GameState Action
+displayGame :: GameState -> View context GameState Action
 displayGame model =
   div_
     [class_ "game-container"]
@@ -203,8 +203,8 @@ displayGame model =
     , displayTileContainer . grid $ model
     ]
 
-display :: GameState -> View GameState Action
-display model =
+display :: context -> props -> GameState -> View context GameState Action
+display _ _ model =
   div_
     [class_ "container"]
     [displayHeading model, displayIntro, displayGame model]
