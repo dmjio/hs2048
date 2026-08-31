@@ -203,8 +203,8 @@ displayGame model =
     , displayTileContainer . grid $ model
     ]
 
-display :: GameState -> View context GameState Action
-display model =
+display :: context -> props -> GameState -> View context GameState Action
+display _ _ model =
   div_
     [class_ "container"]
     [displayHeading model, displayIntro, displayGame model]
